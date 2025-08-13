@@ -1,35 +1,50 @@
-const { createApp, ref, onMounted } = Vue;
+const { createApp, ref } = Vue;
 
 createApp({
   setup() {
-    // Estado reactivo
-    const vueMessage = ref('¡Hola Mundo desde Vue 3 Composition API!');
-    const randomNumber = ref(null);
-    const loading = ref(false);
+    // Matriz inicial 2x2
+    const matrix = ref([
+      [0, 0],
+      [0, 0]
+    ]);
 
-    const getRandomNumber = async () => {
-    loading.value = true;
-        try {
-            const data = await fetch('/api/random').then(r => r.json());
-            randomNumber.value = data.number;
-        } catch (err) {
-            console.error('Error:', err);
-        } finally {
-            loading.value = false;
-        }
+    const addRow = () => {
+        const newRow = Array(matrix.value[0].length).fill(0);
+        matrix.value.push(newRow);
     };
 
-    // Al montar el componente, obtener un número
-    onMounted(() => {
-      getRandomNumber();
-    });
+    const delRow = () => {
+        if (matrix.value.length > 2)
+            matrix.value.pop();
+    };
 
-    // Exponer al template
+    // Agregar nueva columna
+    const addColumn = () => {
+      matrix.value.forEach(row => row.push(0));
+    };
+
+    const delColumn = () => {
+        if (matrix.value[0].length > 2)
+            matrix.value.forEach(row => row.pop());
+    };
+
+    const submitMatrix = () => {
+        console.log("Matriz actualizada:");
+        console.table(matrix.value);
+        
+        // Mostrar como objeto JSON formateado
+        console.log("Matriz (JSON):", JSON.stringify(matrix.value, null, 2));
+        
+        // Aquí puedes agregar lógica para enviar al backend
+    };
+
     return {
-      vueMessage,
-      randomNumber,
-      loading,
-      getRandomNumber
+      matrix,
+      addRow,
+      delRow,
+      addColumn,
+      delColumn,
+      submitMatrix,
     };
   }
 }).mount('#app');

@@ -2,24 +2,72 @@
 <html>
 <head>
     <title>Flask + Vue.js</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 </head>
-<body>
-    <div id="app">
-        <h1>{{ message }}</h1>
-        
-        <section>
-            <h2>Saludo desde Vue:</h2>
-            <p v-text="vueMessage"></p>
-        </section>
-        
-        <section>
-            <h2>Número aleatorio desde Flask:</h2>
-            <p v-text="randomNumber"></p>
-            <button @click="getRandomNumber">Obtener nuevo número</button>
-        </section>
-    </div>
+<body class="bg-light">
+    <div id="app" class="container py-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h1 class="h4 mb-0">Matriz Dinámica</h1>
+            </div>
+            
+            <div class="card-body">
+                <div class="d-flex justify-content-center gap-3 mb-4">
+                    <div class="btn-group" role="group">
+                        <button @click="delRow" class="btn btn-danger">
+                            -
+                        </button>
+                        <button class="btn btn-secondary" disabled>
+                            Restricciones
+                        </button>
+                        <button @click="addRow" class="btn btn-success">
+                            +
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button @click="delColumn" class="btn btn-danger">
+                            -
+                        </button>
+                        <button class="btn btn-secondary" disabled>
+                            Variables
+                        </button>
+                        <button @click="addColumn" class="btn btn-success">
+                            +
+                        </button>
+                    </div>
+                </div>
 
+                <div class="d-flex align-items-center">
+                    <span class="display-4 me-2">(</span> 
+
+                        <div class="table-responsive">
+                            <table class="table table-borderless m-0">
+                                <tr v-for="(row, rowIndex) in matrix" :key="rowIndex">
+                                    <td v-for="(cell, colIndex) in row" :key="colIndex" class="p-1">
+                                        <input
+                                            v-model="matrix[rowIndex][colIndex]" 
+                                            class="form-control form-control-sm text-center">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    <span class="display-4 me-2">)</span> 
+                </div>
+            </div>
+
+            <!-- Botón para mostrar datos -->
+            <div class="d-flex justify-content-center">
+                <button @click="submitMatrix" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Procesar Matriz
+                </button>
+            </div>
+            
+            <div class="card-footer">
+                <h3 class="h5">Datos de la matriz:</h3>
+                <pre class="bg-dark text-white p-3 rounded">{{ matrix }}</pre>
+            </div>
+        </div>
+    </div>
     <!-- Solo Vue 3 -->
     <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.js"></script>
     <!-- Nuestro archivo JS -->
