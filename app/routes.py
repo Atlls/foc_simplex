@@ -1,14 +1,11 @@
 from app import app
-from flask import render_template
+from flask import render_template, jsonify
+import random
 
 @app.route('/')
 def home():
-    return render_template('index.html', title='Inicio')
+    return render_template('index.html', message="Flask + Vue.js Integration")
 
-@app.route('/about')
-def about():
-    return render_template('about.html', title='Acerca de')
-
-@app.route('/api/data')
-def get_data():
-    return {'data': [1, 2, 3, 4, 5]}
+@app.route('/api/random')
+def random_number():
+    return jsonify({'number': random.randint(1, 100)})
