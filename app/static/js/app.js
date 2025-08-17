@@ -20,8 +20,6 @@ createApp({
       A_matrix.value.map( elm => 0 )
     )
 
-    console.log(b_matrix.value);
-    console.log(c_matrix.value);
 
     const addRow = () => {
         const newRow = Array(A_matrix.value[0].length).fill(0);
@@ -55,14 +53,58 @@ createApp({
         }
     };
 
-    const submitMatrix = () => {
-        console.log("Matriz actualizada:");
-        console.table(A_matrix.value);
-        
-        // Mostrar como objeto JSON formateado
-        console.log("Matriz (JSON):", JSON.stringify(A_matrix.value, null, 2));
-        
-        // Aquí puedes agregar lógica para enviar al backend
+    const convertMatrixToNumbers = (matrix) => {
+      return matrix.map(row => {
+          return row.map(value => {
+              if (typeof value === 'string' && !isNaN(value)) {
+                  return parseFloat(value);
+              } else if (typeof value !== 'number') {
+                  throw new Error(`Invalid value detected in matrix: ${value}`);
+              }
+              return value;
+          });
+      });
+    };
+
+    const convertListToNumbers = (list) => {
+      return list.map(value => {
+          if (typeof value === 'string' && !isNaN(value)) {
+              return parseFloat(value);
+          } else if (typeof value !== 'number') {
+              throw new Error(`Invalid value detected in list: ${value}`);
+          }
+          return value;
+      });
+    };
+
+    const submitMatrix = async () => {
+        try {
+            const validatedA = convertMatrixToNumbers(A_matrix.value);
+            const validatedb = convertListToNumbers(b_matrix.value);
+            const validatedc = convertListToNumbers(c_matrix.value);
+
+            console.log('Validated Matrices:', { validatedA, validatedb, validatedc });
+
+            const response = await fetch('/api/process-data', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                matrix: validatedA,
+                firstArray: validatedb,
+                secondArray: validatedc,
+                varables: var_matrix.value
+              })
+          });
+
+          const result = await response.json();
+          console.log('Resultado:', result);
+            
+            // Aquí puedes enviar las matrices al endpoint
+        } catch (error) {
+            console.error('Error in submitMatrix:', error.message);
+        }
     };
 
     return {
